@@ -116,15 +116,27 @@ html {
 }
 
 /* Toggle switch styles */
-.toggle-switch {
-  @apply relative inline-flex h-7 w-14 items-center rounded-full transition-colors duration-300 cursor-pointer;
-  background: hsl(var(--foreground));
+/* Spotlight card effect */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
 }
-.toggle-switch .toggle-dot {
-  @apply absolute h-5 w-5 rounded-full transition-transform duration-300;
-  background: hsl(var(--background));
-  left: 4px;
+.spotlight-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    hsl(var(--accent) / 0.08),
+    transparent 60%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
 }
-.toggle-switch.active .toggle-dot {
-  transform: translateX(28px);
+.spotlight-card:hover::before {
+  opacity: 1;
 }
