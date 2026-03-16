@@ -2,23 +2,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import heroPhoto from "@/assets/hero-photo.webp";
 
-const glassStrips = [
-  { left: '0%', blur: 3 }, { left: '2.5%', blur: 14 }, { left: '5%', blur: 5 },
-  { left: '7.5%', blur: 18 }, { left: '10%', blur: 4 }, { left: '12.5%', blur: 22 },
-  { left: '15%', blur: 6 }, { left: '17.5%', blur: 16 }, { left: '20%', blur: 3 },
-  { left: '22.5%', blur: 20 }, { left: '25%', blur: 5 }, { left: '27.5%', blur: 12 },
-  { left: '30%', blur: 7 }, { left: '32.5%', blur: 24 }, { left: '35%', blur: 4 },
-  { left: '37.5%', blur: 18 }, { left: '40%', blur: 6 }, { left: '42.5%', blur: 14 },
-  { left: '45%', blur: 3 }, { left: '47.5%', blur: 20 }, { left: '50%', blur: 5 },
-  { left: '52.5%', blur: 16 }, { left: '55%', blur: 8 }, { left: '57.5%', blur: 22 },
-  { left: '60%', blur: 4 }, { left: '62.5%', blur: 12 }, { left: '65%', blur: 6 },
-  { left: '67.5%', blur: 18 }, { left: '70%', blur: 3 }, { left: '72.5%', blur: 24 },
-  { left: '75%', blur: 5 }, { left: '77.5%', blur: 14 }, { left: '80%', blur: 7 },
-  { left: '82.5%', blur: 20 }, { left: '85%', blur: 4 }, { left: '87.5%', blur: 16 },
-  { left: '90%', blur: 6 }, { left: '92.5%', blur: 22 }, { left: '95%', blur: 3 },
-  { left: '97.5%', blur: 10 },
-];
-
 const HeroSection = () => {
   const [mode, setMode] = useState<"available" | "busy">("available");
 
@@ -118,7 +101,7 @@ const HeroSection = () => {
         </motion.div>
       </div>
 
-      {/* Right image with ribbed glass effect */}
+      {/* Right image — clean, no glass effect */}
       <div className="hidden lg:block w-[45%] relative overflow-hidden">
         <motion.div
           initial={{ opacity: 0, scale: 1.05 }}
@@ -126,54 +109,11 @@ const HeroSection = () => {
           transition={{ duration: 1, delay: 0.3 }}
           className="absolute inset-0"
         >
-          {/* SVG filter for displacement */}
-          <svg className="absolute w-0 h-0">
-            <defs>
-              <filter id="ribbed-glass">
-                <feTurbulence
-                  type="turbulence"
-                  baseFrequency="0.04 0.001"
-                  numOctaves={3}
-                  result="noise"
-                />
-                <feDisplacementMap
-                  in="SourceGraphic"
-                  in2="noise"
-                  scale={25}
-                  xChannelSelector="R"
-                  yChannelSelector="G"
-                />
-              </filter>
-            </defs>
-          </svg>
-
-          {/* Base image with filter */}
           <img
             src={heroPhoto}
             alt="Developer portrait"
             className="w-full h-full object-cover"
-            style={{
-              filter: "url(#ribbed-glass) contrast(1.05) brightness(0.95)",
-            }}
           />
-
-          {/* Vertical ribbed glass strips overlay */}
-          <div className="absolute inset-0 z-10">
-            {glassStrips.map((strip, i) => (
-              <div
-                key={i}
-                className="absolute top-0 h-full"
-                style={{
-                  left: strip.left,
-                  width: "2.5%",
-                  backdropFilter: `blur(${strip.blur}px)`,
-                  WebkitBackdropFilter: `blur(${strip.blur}px)`,
-                  background: "rgba(255, 255, 255, 0.02)",
-                  borderLeft: "1px solid rgba(255, 255, 255, 0.06)",
-                }}
-              />
-            ))}
-          </div>
 
           {/* Left edge blend — fades into the left panel */}
           <div
