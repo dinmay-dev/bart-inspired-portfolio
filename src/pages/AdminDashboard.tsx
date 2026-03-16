@@ -5,7 +5,8 @@ import {
   LogOut, Menu, X, ExternalLink, Plus, Edit, Trash2, 
   Eye, Mail, Clock, CheckCircle 
 } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const navItems = [
   { path: "/admin", label: "Overview", icon: Home, exact: true },
