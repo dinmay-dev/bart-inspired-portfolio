@@ -333,13 +333,17 @@ const AdminDashboard = () => {
           ))}
         </nav>
 
-        <Link
-          to="/"
-          className="flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        <div className="text-xs text-muted-foreground mb-4 truncate px-3">
+          {user?.email}
+        </div>
+
+        <button
+          onClick={handleSignOut}
+          className="flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors w-full"
         >
           <LogOut className="w-4 h-4" />
-          Back to site
-        </Link>
+          Sign Out
+        </button>
       </div>
 
       {/* Main Content */}
