@@ -231,7 +231,14 @@ const getPageContent = (pathname: string) => {
 
 const AdminDashboard = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { signOut, user } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/login");
+  };
 
   const isActive = (path: string, exact?: boolean) => {
     if (exact) return location.pathname === path;
