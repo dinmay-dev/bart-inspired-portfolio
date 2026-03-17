@@ -1,13 +1,16 @@
 import { motion } from "framer-motion";
-
-const stats = [
-  { value: "50+", label: "open source contributions" },
-  { value: "20+", label: "projects shipped" },
-  { value: "3+", label: "years building" },
-  { value: "∞", label: "cups of coffee" },
-];
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 const StatsSection = () => {
+  const { get } = useSiteContent();
+
+  const stats = [
+    { value: get("stat_1_value", "50+"), label: get("stat_1_label", "open source contributions") },
+    { value: get("stat_2_value", "20+"), label: get("stat_2_label", "projects shipped") },
+    { value: get("stat_3_value", "3+"), label: get("stat_3_label", "years building") },
+    { value: get("stat_4_value", "∞"), label: get("stat_4_label", "cups of coffee") },
+  ];
+
   return (
     <section className="bg-section-dark text-section-dark-fg py-24 md:py-32">
       <div className="max-w-7xl mx-auto px-6 md:px-16">
@@ -18,13 +21,13 @@ const StatsSection = () => {
           transition={{ duration: 0.6 }}
           className="text-3xl md:text-4xl font-bold tracking-tight mb-16 text-center"
         >
-          Impact measured in shipped code
+          {get("stats_title", "Impact measured in shipped code")}
         </motion.h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
           {stats.map((stat, i) => (
             <motion.div
-              key={stat.label}
+              key={i}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import { useInView } from "framer-motion";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
-const projects = [
+const defaultProjects = [
   {
     title: "Open Source ML Contributions",
     subtitle: "Contributing to machine learning projects that power real applications",
@@ -53,7 +54,7 @@ const AnimatedText = ({ text }: { text: string }) => {
   );
 };
 
-const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: number }) => {
+const ProjectCard = ({ project, index }: { project: typeof defaultProjects[0]; index: number }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -97,6 +98,7 @@ const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: n
 const WorkSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const { get } = useSiteContent();
 
   return (
     <section id="work" className="py-24 md:py-32">
@@ -108,16 +110,16 @@ const WorkSection = () => {
           transition={{ duration: 0.6 }}
           className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4"
         >
-          Work worth scrolling
+          {get("work_title", "Work worth scrolling")}
         </motion.h2>
         <p className="text-lg text-muted-foreground mb-4 max-w-2xl">
-          Stuff I've designed, built or shipped
+          {get("work_subtitle", "Stuff I've designed, built or shipped")}
         </p>
         <div className="text-xl md:text-2xl text-muted-foreground max-w-3xl mb-16 leading-relaxed">
-          <AnimatedText text="A mix of shipped products, experiments, and code that made it to production. Built with clarity, curiosity, and just enough chaos." />
+          <AnimatedText text={get("work_description", "A mix of shipped products, experiments, and code that made it to production. Built with clarity, curiosity, and just enough chaos.")} />
         </div>
 
-        {projects.map((project, i) => (
+        {defaultProjects.map((project, i) => (
           <ProjectCard key={project.title} project={project} index={i} />
         ))}
       </div>
