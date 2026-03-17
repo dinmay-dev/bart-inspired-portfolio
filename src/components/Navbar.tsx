@@ -27,13 +27,8 @@ const Navbar = () => {
         </a>
       </div>
 
-      {/* CTA */}
-      <Link
-        to="/admin"
-        className="bg-accent text-accent-foreground px-6 py-3 rounded-full text-sm font-semibold hover:scale-105 transition-transform"
-      >
-        Admin
-      </Link>
+      {/* Spacer to balance layout */}
+      <div className="w-20" />
     </motion.nav>
   );
 };
