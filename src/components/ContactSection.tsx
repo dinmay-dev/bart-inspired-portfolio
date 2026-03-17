@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Send, Mail, MapPin, Github, Linkedin, Twitter, CheckCircle, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 interface FormData {
   name: string;
@@ -27,6 +28,7 @@ function handleSpotlight(e: React.MouseEvent<HTMLDivElement>) {
 const ContactSection = () => {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const { get } = useSiteContent();
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -51,7 +53,6 @@ const ContactSection = () => {
     e.preventDefault();
     if (!validate()) return;
     setIsSubmitting(true);
-    // Simulate submission
     await new Promise((r) => setTimeout(r, 1500));
     setIsSubmitting(false);
     setIsSubmitted(true);
@@ -59,6 +60,12 @@ const ContactSection = () => {
     setFormData({ name: "", email: "", subject: "", message: "" });
     setTimeout(() => setIsSubmitted(false), 3000);
   };
+
+  const socialLinks = [
+    { icon: Github, href: get("github_url", "https://github.com/dino65-dev"), label: "GitHub" },
+    { icon: Linkedin, href: get("linkedin_url", "https://linkedin.com"), label: "LinkedIn" },
+    { icon: Twitter, href: get("twitter_url", "https://twitter.com"), label: "Twitter" },
+  ];
 
   return (
     <section id="contact" ref={sectionRef} className="py-24 md:py-32 bg-section-dark text-section-dark-fg">
@@ -73,12 +80,11 @@ const ContactSection = () => {
             <MessageSquare className="w-4 h-4" /> Contact
           </p>
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-            Let's talk
+            {get("contact_heading", "Let's talk")}
           </h2>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-12 mt-12">
-          {/* Contact info */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
@@ -86,7 +92,7 @@ const ContactSection = () => {
             className="space-y-8"
           >
             <p className="text-lg text-section-dark-fg/70 leading-relaxed">
-              Got a project, question, or just want to say hi? Drop me a message and I'll get back to you.
+              {get("contact_subtext", "Got a project, question, or just want to say hi? Drop me a message and I'll get back to you.")}
             </p>
 
             <div className="space-y-4">
@@ -97,7 +103,7 @@ const ContactSection = () => {
                 <Mail className="w-5 h-5 text-accent" />
                 <div>
                   <p className="text-xs text-section-dark-fg/50 uppercase tracking-wider">Email</p>
-                  <p className="text-sm text-section-dark-fg">dino65dev@gmail.com</p>
+                  <p className="text-sm text-section-dark-fg">{get("contact_email", "dino65dev@gmail.com")}</p>
                 </div>
               </div>
 
@@ -108,18 +114,13 @@ const ContactSection = () => {
                 <MapPin className="w-5 h-5 text-accent" />
                 <div>
                   <p className="text-xs text-section-dark-fg/50 uppercase tracking-wider">Location</p>
-                  <p className="text-sm text-section-dark-fg">India</p>
+                  <p className="text-sm text-section-dark-fg">{get("contact_location", "India")}</p>
                 </div>
               </div>
             </div>
 
-            {/* Social links */}
             <div className="flex gap-4">
-              {[
-                { icon: Github, href: "https://github.com/dino65-dev", label: "GitHub" },
-                { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-                { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-              ].map(({ icon: Icon, href, label }) => (
+              {socialLinks.map(({ icon: Icon, href, label }) => (
                 <a
                   key={label}
                   href={href}
@@ -133,7 +134,6 @@ const ContactSection = () => {
             </div>
           </motion.div>
 
-          {/* Contact form */}
           <motion.form
             initial={{ opacity: 0, x: 30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}

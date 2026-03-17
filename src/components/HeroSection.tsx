@@ -1,39 +1,47 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import heroPhoto from "@/assets/hero-photo.webp";
+import heroPhotoFallback from "@/assets/hero-photo.webp";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 const HeroSection = () => {
-  const [mode, setMode] = useState<"available" | "busy">("available");
+  const { get, getImageUrl } = useSiteContent();
+
+  const availability = get("availability", "available");
+  const heroImage = getImageUrl(get("hero_image", "")) || heroPhotoFallback;
+
+  // Parse headline: \n = line break, _text_ = italic
+  const renderHeadline = (raw: string) => {
+    const lines = raw.split("\n");
+    return lines.map((line, li) => {
+      const parts = line.split(/(_[^_]+_)/g);
+      return (
+        <span key={li}>
+          {li > 0 && <br />}
+          {parts.map((part, pi) => {
+            if (part.startsWith("_") && part.endsWith("_")) {
+              return <em key={pi} className="font-normal italic">{part.slice(1, -1)}</em>;
+            }
+            return <span key={pi}>{part}</span>;
+          })}
+        </span>
+      );
+    });
+  };
 
   return (
     <section className="relative min-h-screen flex">
       {/* Left content */}
       <div className="flex-1 flex flex-col justify-center px-6 md:px-16 lg:px-24 pt-24 pb-12 z-10">
-        {/* Availability Toggle */}
+        {/* Availability indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
           className="flex items-center gap-3 mb-10 text-sm font-medium text-muted-foreground"
         >
-          <span>Available</span>
-          <button
-            onClick={() => setMode(mode === "available" ? "busy" : "available")}
-            className="relative w-11 h-6 rounded-full transition-colors duration-300 focus:outline-none"
-            style={{
-              backgroundColor: mode === "available" ? "hsl(var(--accent))" : "hsl(var(--border))",
-            }}
-            aria-label="Toggle availability"
-          >
-            <div
-              className="absolute top-1 w-4 h-4 rounded-full bg-background transition-transform duration-300"
-              style={{
-                left: "4px",
-                transform: mode === "busy" ? "translateX(20px)" : "translateX(0)",
-              }}
-            />
-          </button>
-          <span>Busy</span>
+          <span
+            className={`w-2.5 h-2.5 rounded-full ${availability === "available" ? "bg-green-500 animate-pulse" : "bg-muted-foreground"}`}
+          />
+          <span>{availability === "available" ? "Available for work" : "Currently busy"}</span>
         </motion.div>
 
         {/* Headline */}
@@ -43,10 +51,7 @@ const HeroSection = () => {
           transition={{ duration: 0.7, delay: 0.2 }}
           className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05] text-foreground max-w-2xl"
         >
-          I code and build
-          <br />
-          digital things that{" "}
-          <em className="font-normal italic">work</em>
+          {renderHeadline(get("hero_headline", "I code and build\ndigital things that _work_"))}
         </motion.h1>
 
         {/* Sub */}
@@ -56,8 +61,7 @@ const HeroSection = () => {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="mt-8 text-lg md:text-xl leading-relaxed text-muted-foreground max-w-lg"
         >
-          Open source contributor, full-stack developer, and ML enthusiast.
-          Building things that matter. No filler, no fluff.
+          {get("hero_subtext", "Open source contributor, full-stack developer, and ML enthusiast. Building things that matter. No filler, no fluff.")}
         </motion.p>
 
         {/* CTAs */}
@@ -71,15 +75,15 @@ const HeroSection = () => {
             href="#work"
             className="bg-accent text-accent-foreground px-8 py-4 rounded-full text-sm font-semibold hover:scale-105 transition-transform inline-block"
           >
-            Scroll for work
+            {get("hero_cta_text", "Scroll for work")}
           </a>
           <a
-            href="https://github.com/dino65-dev"
+            href={get("hero_github_url", "https://github.com/dino65-dev")}
             target="_blank"
             rel="noopener noreferrer"
             className="text-accent text-sm font-semibold hover:underline"
           >
-            GitHub, if you must
+            {get("hero_github_text", "GitHub, if you must")}
           </a>
         </motion.div>
 
@@ -101,7 +105,7 @@ const HeroSection = () => {
         </motion.div>
       </div>
 
-      {/* Right image — clean, no glass effect */}
+      {/* Right image */}
       <div className="hidden lg:block w-[45%] relative overflow-hidden">
         <motion.div
           initial={{ opacity: 0, scale: 1.05 }}
@@ -110,12 +114,10 @@ const HeroSection = () => {
           className="absolute inset-0"
         >
           <img
-            src={heroPhoto}
+            src={heroImage}
             alt="Developer portrait"
             className="w-full h-full object-cover"
           />
-
-          {/* Left edge blend — fades into the left panel */}
           <div
             className="absolute inset-y-0 left-0 w-24 z-20"
             style={{
@@ -132,7 +134,7 @@ const HeroSection = () => {
         transition={{ delay: 0.5 }}
         className="lg:hidden absolute top-24 right-6 w-20 h-20 rounded-full overflow-hidden border-2 border-accent/30"
       >
-        <img src={heroPhoto} alt="Developer" className="w-full h-full object-cover" />
+        <img src={heroImage} alt="Developer" className="w-full h-full object-cover" />
       </motion.div>
 
       {/* Bottom text */}
@@ -142,7 +144,7 @@ const HeroSection = () => {
         transition={{ delay: 1.5 }}
         className="absolute bottom-8 right-8 text-xs text-muted-foreground hidden lg:block z-30"
       >
-        Building open source since 2022. Keep scrollin'
+        {get("hero_bottom_text", "Building open source since 2022. Keep scrollin'")}
       </motion.p>
     </section>
   );
