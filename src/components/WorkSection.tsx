@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { useInView } from "framer-motion";
 import { useSiteContent } from "@/hooks/useSiteContent";
 
@@ -33,6 +33,16 @@ const defaultProjects = [
   },
 ];
 
+interface Project {
+  title: string;
+  subtitle: string;
+  role: string;
+  date: string;
+  link: string;
+  linkText: string;
+  highlight: string;
+}
+
 const AnimatedText = ({ text }: { text: string }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
@@ -54,7 +64,7 @@ const AnimatedText = ({ text }: { text: string }) => {
   );
 };
 
-const ProjectCard = ({ project, index }: { project: typeof defaultProjects[0]; index: number }) => {
+const ProjectCard = ({ project, index }: { project: Project; index: number }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -100,6 +110,17 @@ const WorkSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-50px" });
   const { get } = useSiteContent();
 
+  const projects = useMemo(() => {
+    const raw = get("projects_json", "");
+    if (!raw) return defaultProjects;
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed : defaultProjects;
+    } catch {
+      return defaultProjects;
+    }
+  }, [get]);
+
   return (
     <section id="work" className="py-24 md:py-32">
       <div className="max-w-7xl mx-auto px-6 md:px-16">
@@ -119,8 +140,8 @@ const WorkSection = () => {
           <AnimatedText text={get("work_description", "A mix of shipped products, experiments, and code that made it to production. Built with clarity, curiosity, and just enough chaos.")} />
         </div>
 
-        {defaultProjects.map((project, i) => (
-          <ProjectCard key={project.title} project={project} index={i} />
+        {projects.map((project: Project, i: number) => (
+          <ProjectCard key={project.title + i} project={project} index={i} />
         ))}
       </div>
     </section>
