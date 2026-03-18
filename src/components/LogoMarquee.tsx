@@ -1,12 +1,20 @@
 import { motion } from "framer-motion";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
-const technologies = [
+const defaultTechnologies = [
   "React", "TypeScript", "Python", "TailwindCSS", "Node.js",
   "TensorFlow", "Docker", "Git", "PostgreSQL", "Linux",
   "Vite", "Next.js", "FastAPI", "MongoDB", "Redis",
 ];
 
 const LogoMarquee = () => {
+  const { get } = useSiteContent();
+
+  const raw = get("technologies_list", "");
+  const technologies = raw
+    ? raw.split(",").map((t) => t.trim()).filter(Boolean)
+    : defaultTechnologies;
+
   return (
     <section className="py-16 border-t border-b border-border overflow-hidden">
       <motion.p

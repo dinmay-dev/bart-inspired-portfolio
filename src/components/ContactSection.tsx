@@ -3,6 +3,7 @@ import { motion, useInView } from "framer-motion";
 import { Send, Mail, MapPin, Github, Linkedin, Twitter, CheckCircle, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { supabase } from "@/lib/supabase";
 
 interface FormData {
   name: string;
@@ -53,12 +54,24 @@ const ContactSection = () => {
     e.preventDefault();
     if (!validate()) return;
     setIsSubmitting(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    toast.success("Message sent! I'll get back to you soon.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
-    setTimeout(() => setIsSubmitted(false), 3000);
+    try {
+      const { error } = await supabase.from("messages").insert({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        subject: formData.subject.trim() || null,
+        message: formData.message.trim(),
+      });
+      if (error) throw error;
+      setIsSubmitted(true);
+      toast.success("Message sent! I'll get back to you soon.");
+      setFormData({ name: "", email: "", subject: "", message: "" });
+      setTimeout(() => setIsSubmitted(false), 3000);
+    } catch (err) {
+      console.error("Failed to send message:", err);
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const socialLinks = [
