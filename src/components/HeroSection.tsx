@@ -8,6 +8,7 @@ const HeroSection = () => {
 
   const availability = get("availability", "available");
   const heroImage = getImageUrl(get("hero_image", "")) || heroPhotoFallback;
+  const resumeUrl = get("resume_url", "");
 
   // Parse headline: \n = line break, _text_ = italic
   const renderHeadline = (raw: string) => {
