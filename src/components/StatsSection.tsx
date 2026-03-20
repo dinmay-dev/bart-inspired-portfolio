@@ -1,8 +1,17 @@
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useSiteContent } from "@/hooks/useSiteContent";
 
 const StatsSection = () => {
   const { get } = useSiteContent();
+  const sectionRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ["5%", "-5%"]);
 
   const stats = [
     { value: get("stat_1_value", "50+"), label: get("stat_1_label", "open source contributions") },
@@ -12,8 +21,8 @@ const StatsSection = () => {
   ];
 
   return (
-    <section className="bg-section-dark text-section-dark-fg py-24 md:py-32">
-      <div className="max-w-7xl mx-auto px-6 md:px-16">
+    <section ref={sectionRef} className="bg-section-dark text-section-dark-fg py-24 md:py-32 overflow-hidden">
+      <motion.div style={{ y }} className="max-w-7xl mx-auto px-6 md:px-16">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -43,7 +52,7 @@ const StatsSection = () => {
             </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

@@ -7,20 +7,23 @@ import LogoMarquee from "@/components/LogoMarquee";
 import StatsSection from "@/components/StatsSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import SmoothScroll from "@/components/SmoothScroll";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <HeroSection />
-      <AboutSection />
-      <WorkSection />
-      <BlogSection />
-      <LogoMarquee />
-      <StatsSection />
-      <ContactSection />
-      <Footer />
-    </div>
+    <SmoothScroll>
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <HeroSection />
+        <AboutSection />
+        <WorkSection />
+        <BlogSection />
+        <LogoMarquee />
+        <StatsSection />
+        <ContactSection />
+        <Footer />
+      </div>
+    </SmoothScroll>
   );
 };
 
