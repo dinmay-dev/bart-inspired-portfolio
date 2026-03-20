@@ -1,7 +1,11 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 const Navbar = () => {
+  const { get } = useSiteContent();
+  const resumeUrl = get("resume_url", "");
+
   return (
     <motion.nav
       initial={{ y: -20, opacity: 0 }}
@@ -19,16 +23,28 @@ const Navbar = () => {
         <a href="#work" className="px-4 py-1 text-sm font-medium hover:text-accent transition-colors">
           Work worth scrolling
         </a>
+        {resumeUrl && (
+          <a
+            href={resumeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-1 text-sm font-medium hover:text-accent transition-colors"
+          >
+            Résumé
+          </a>
+        )}
         <a href="#blog" className="px-4 py-1 text-sm font-medium hover:text-accent transition-colors">
           Blog
         </a>
-        <a href="#contact" className="px-4 py-1 text-sm font-medium hover:text-accent transition-colors">
-          Contact
-        </a>
       </div>
 
-      {/* Spacer to balance layout */}
-      <div className="w-20" />
+      {/* CTA */}
+      <a
+        href="#contact"
+        className="bg-accent text-accent-foreground px-6 py-3 rounded-full text-sm font-semibold hover:scale-105 transition-transform"
+      >
+        Let's talk
+      </a>
     </motion.nav>
   );
 };

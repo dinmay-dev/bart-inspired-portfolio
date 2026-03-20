@@ -1,6 +1,5 @@
-import { motion } from "framer-motion";
 import { useRef, useMemo } from "react";
-import { useInView } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useSiteContent } from "@/hooks/useSiteContent";
 
 const defaultProjects = [
@@ -65,12 +64,18 @@ const AnimatedText = ({ text }: { text: string }) => {
 };
 
 const ProjectCard = ({ project, index }: { project: Project; index: number }) => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "center center"],
+  });
+  const y = useTransform(scrollYProgress, [0, 1], [60, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
+      ref={ref}
+      style={{ y, opacity }}
       className="border-t border-border py-12 md:py-16 group"
     >
       <p className="text-sm text-accent font-medium mb-4">{project.highlight}</p>

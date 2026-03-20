@@ -1,16 +1,26 @@
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Download } from "lucide-react";
 import heroPhotoFallback from "@/assets/hero-photo.webp";
 import { useSiteContent } from "@/hooks/useSiteContent";
 
 const HeroSection = () => {
   const { get, getImageUrl } = useSiteContent();
+  const sectionRef = useRef(null);
 
   const availability = get("availability", "available");
   const heroImage = getImageUrl(get("hero_image", "")) || heroPhotoFallback;
   const resumeUrl = get("resume_url", "");
 
-  // Parse headline: \n = line break, _text_ = italic
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+
   const renderHeadline = (raw: string) => {
     const lines = raw.split("\n");
     return lines.map((line, li) => {
@@ -30,9 +40,12 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex">
+    <section ref={sectionRef} className="relative min-h-screen flex overflow-hidden">
       {/* Left content */}
-      <div className="flex-1 flex flex-col justify-center px-6 md:px-16 lg:px-24 pt-24 pb-12 z-10">
+      <motion.div
+        style={{ y: textY, opacity }}
+        className="flex-1 flex flex-col justify-center px-6 md:px-16 lg:px-24 pt-24 pb-12 z-10"
+      >
         {/* Availability indicator */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -71,7 +84,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.7 }}
-          className="flex items-center gap-6 mt-12"
+          className="flex flex-wrap items-center gap-6 mt-12"
         >
           <a
             href="#work"
@@ -117,15 +130,16 @@ const HeroSection = () => {
             ↓
           </motion.div>
         </motion.div>
-      </div>
+      </motion.div>
 
-      {/* Right image */}
+      {/* Right image with parallax */}
       <div className="hidden lg:block w-[45%] relative overflow-hidden">
         <motion.div
           initial={{ opacity: 0, scale: 1.05 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.3 }}
-          className="absolute inset-0"
+          style={{ y: imageY }}
+          className="absolute inset-0 -top-[10%] -bottom-[10%]"
         >
           <img
             src={heroImage}
