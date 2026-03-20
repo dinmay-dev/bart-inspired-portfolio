@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Download } from "lucide-react";
 import heroPhotoFallback from "@/assets/hero-photo.webp";
 import { useSiteContent } from "@/hooks/useSiteContent";
 

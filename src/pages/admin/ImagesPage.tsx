@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
-import { Upload, Trash2, Loader2 } from "lucide-react";
+import { Upload, Trash2, Loader2, FileText } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
 const imageSlots = [
@@ -11,7 +12,9 @@ const imageSlots = [
 const ImagesPage = () => {
   const { get, update, getImageUrl, uploadImage, refresh } = useSiteContent();
   const [uploading, setUploading] = useState<Record<string, boolean>>({});
+  const [resumeUploading, setResumeUploading] = useState(false);
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+  const resumeInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleUpload = async (slot: typeof imageSlots[0], file: File) => {
     setUploading((prev) => ({ ...prev, [slot.key]: true }));
@@ -39,11 +42,43 @@ const ImagesPage = () => {
     }
   };
 
+  const handleResumeUpload = async (file: File) => {
+    setResumeUploading(true);
+    try {
+      const ext = file.name.split(".").pop() || "pdf";
+      const path = `resume.${ext}`;
+      const { error } = await supabase.storage
+        .from("site-images")
+        .upload(path, file, { upsert: true });
+      if (error) throw error;
+      const { data } = supabase.storage.from("site-images").getPublicUrl(path);
+      await update("resume_url", data.publicUrl);
+      refresh();
+      toast.success("Resume uploaded!");
+    } catch (err: any) {
+      toast.error(`Resume upload failed: ${err.message}`);
+    } finally {
+      setResumeUploading(false);
+    }
+  };
+
+  const handleResumeRemove = async () => {
+    try {
+      await update("resume_url", "");
+      refresh();
+      toast.success("Resume removed");
+    } catch {
+      toast.error("Failed to remove resume");
+    }
+  };
+
+  const resumeUrl = get("resume_url", "");
+
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Image Manager</h1>
-        <p className="text-muted-foreground mt-1">Upload and manage site images.</p>
+        <h1 className="text-3xl font-bold text-foreground">Image & File Manager</h1>
+        <p className="text-muted-foreground mt-1">Upload and manage site images and files.</p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
@@ -112,6 +147,67 @@ const ImagesPage = () => {
             </div>
           );
         })}
+
+        {/* Resume Upload Card */}
+        <div className="border border-border bg-card overflow-hidden">
+          <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+            <h3 className="font-semibold text-foreground text-sm">Resume / CV</h3>
+            {resumeUrl && (
+              <button
+                onClick={handleResumeRemove}
+                className="text-muted-foreground hover:text-accent transition-colors"
+                title="Remove resume"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+
+          <div className="p-6">
+            {resumeUrl ? (
+              <div className="h-48 border border-border flex flex-col items-center justify-center gap-3 mb-4 bg-muted/30">
+                <FileText className="w-12 h-12 text-accent" />
+                <p className="text-sm text-foreground font-medium">Resume uploaded</p>
+                <a
+                  href={resumeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-accent hover:underline"
+                >
+                  View / Download
+                </a>
+              </div>
+            ) : (
+              <div className="h-48 border-2 border-dashed border-border flex items-center justify-center mb-4">
+                <p className="text-sm text-muted-foreground">No resume uploaded</p>
+              </div>
+            )}
+
+            <input
+              ref={resumeInputRef}
+              type="file"
+              accept=".pdf,.doc,.docx"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleResumeUpload(file);
+                e.target.value = "";
+              }}
+            />
+
+            <button
+              onClick={() => resumeInputRef.current?.click()}
+              disabled={resumeUploading}
+              className="w-full border border-border py-2.5 text-sm font-semibold text-foreground hover:border-accent transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {resumeUploading ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Uploading...</>
+              ) : (
+                <><Upload className="w-4 h-4" /> Upload Resume</>
+              )}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
