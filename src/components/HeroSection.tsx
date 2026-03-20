@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Download } from "lucide-react";
 import heroPhotoFallback from "@/assets/hero-photo.webp";
 import { useSiteContent } from "@/hooks/useSiteContent";
 
@@ -7,6 +8,7 @@ const HeroSection = () => {
 
   const availability = get("availability", "available");
   const heroImage = getImageUrl(get("hero_image", "")) || heroPhotoFallback;
+  const resumeUrl = get("resume_url", "");
 
   // Parse headline: \n = line break, _text_ = italic
   const renderHeadline = (raw: string) => {
@@ -77,6 +79,18 @@ const HeroSection = () => {
           >
             {get("hero_cta_text", "Scroll for work")}
           </a>
+          {resumeUrl && (
+            <a
+              href={resumeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              download
+              className="border border-accent text-accent px-8 py-4 rounded-full text-sm font-semibold hover:scale-105 transition-transform inline-flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Resume
+            </a>
+          )}
           <a
             href={get("hero_github_url", "https://github.com/dino65-dev")}
             target="_blank"
