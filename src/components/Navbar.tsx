@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useSiteContent } from "@/hooks/useSiteContent";
@@ -5,16 +6,25 @@ import { useSiteContent } from "@/hooks/useSiteContent";
 const Navbar = () => {
   const { get } = useSiteContent();
   const resumeUrl = get("resume_url", "");
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <motion.nav
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-5"
+      className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-5 transition-all duration-300 ${
+        scrolled ? "backdrop-blur-md bg-background/80 shadow-sm" : ""
+      }`}
     >
       {/* Logo */}
-      <Link to="/" className="text-2xl font-bold tracking-tighter text-foreground">
+      <Link to="/" className="text-2xl font-headline font-bold tracking-tighter text-foreground hover:text-accent transition-colors">
         D<span className="text-accent">.</span>
       </Link>
 
@@ -41,7 +51,7 @@ const Navbar = () => {
       {/* CTA */}
       <a
         href="#contact"
-        className="bg-accent text-accent-foreground px-6 py-3 rounded-full text-sm font-semibold hover:scale-105 transition-transform"
+        className="bg-accent text-accent-foreground px-6 py-3 rounded-full text-sm font-semibold hover:scale-105 hover:shadow-lg hover:shadow-accent/20 transition-all"
       >
         Let's talk
       </a>

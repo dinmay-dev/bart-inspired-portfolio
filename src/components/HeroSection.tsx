@@ -1,16 +1,15 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { Download } from "lucide-react";
+import { useRef, useState } from "react";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import heroPhotoFallback from "@/assets/hero-photo.webp";
 import { useSiteContent } from "@/hooks/useSiteContent";
 
 const HeroSection = () => {
   const { get, getImageUrl } = useSiteContent();
   const sectionRef = useRef(null);
+  const [mode, setMode] = useState<"real" | "corporate">("real");
 
   const availability = get("availability", "available");
   const heroImage = getImageUrl(get("hero_image", "")) || heroPhotoFallback;
-  const resumeUrl = get("resume_url", "");
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -21,6 +20,25 @@ const HeroSection = () => {
   const textY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
+  const content = {
+    real: {
+      headline: get("hero_headline", "I code and build\ndigital things that _work_"),
+      subtext: get("hero_subtext", "Open source contributor, full-stack developer, and ML enthusiast. Building things that matter. No filler, no fluff."),
+      cta: get("hero_cta_text", "Scroll for work"),
+      github: get("hero_github_text", "GitHub, if you must"),
+      bottom: get("hero_bottom_text", "Building open source since 2022. Keep scrollin'"),
+    },
+    corporate: {
+      headline: "Delivering scalable\ndigital _solutions_",
+      subtext: "Full-stack engineer specializing in machine learning and modern web applications. Proven track record of impactful open-source contributions.",
+      cta: "View portfolio",
+      github: "View GitHub profile",
+      bottom: "Engineering excellence since 2022",
+    },
+  };
+
+  const c = content[mode];
+
   const renderHeadline = (raw: string) => {
     const lines = raw.split("\n");
     return lines.map((line, li) => {
@@ -30,7 +48,11 @@ const HeroSection = () => {
           {li > 0 && <br />}
           {parts.map((part, pi) => {
             if (part.startsWith("_") && part.endsWith("_")) {
-              return <em key={pi} className="font-normal italic">{part.slice(1, -1)}</em>;
+              return (
+                <em key={pi} className="font-script font-normal italic text-accent">
+                  {part.slice(1, -1)}
+                </em>
+              );
             }
             return <span key={pi}>{part}</span>;
           })}
@@ -46,38 +68,71 @@ const HeroSection = () => {
         style={{ y: textY, opacity }}
         className="flex-1 flex flex-col justify-center px-6 md:px-16 lg:px-24 pt-24 pb-12 z-10"
       >
-        {/* Availability indicator */}
+        {/* Mode toggle + Availability */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="flex items-center gap-3 mb-10 text-sm font-medium text-muted-foreground"
+          className="flex items-center gap-6 mb-10"
         >
-          <span
-            className={`w-2.5 h-2.5 rounded-full ${availability === "available" ? "bg-green-500 animate-pulse" : "bg-muted-foreground"}`}
-          />
-          <span>{availability === "available" ? "Available for work" : "Currently busy"}</span>
+          <div className="flex items-center gap-3 text-sm font-medium text-muted-foreground">
+            <span
+              className={`w-2.5 h-2.5 rounded-full ${availability === "available" ? "bg-green-500 animate-pulse" : "bg-muted-foreground"}`}
+            />
+            <span>{availability === "available" ? "Available for work" : "Currently busy"}</span>
+          </div>
+
+          {/* Real / Corporate toggle */}
+          <button
+            onClick={() => setMode(mode === "real" ? "corporate" : "real")}
+            className="relative flex items-center bg-muted rounded-full p-1 text-xs font-semibold"
+          >
+            <span
+              className={`px-3 py-1.5 rounded-full z-10 transition-colors duration-300 ${mode === "real" ? "text-accent-foreground" : "text-muted-foreground"}`}
+            >
+              Real
+            </span>
+            <span
+              className={`px-3 py-1.5 rounded-full z-10 transition-colors duration-300 ${mode === "corporate" ? "text-accent-foreground" : "text-muted-foreground"}`}
+            >
+              Corporate
+            </span>
+            <motion.div
+              layout
+              className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-accent rounded-full"
+              style={{ left: mode === "real" ? "4px" : "calc(50%)" }}
+              transition={{ type: "spring", stiffness: 500, damping: 35 }}
+            />
+          </button>
         </motion.div>
 
         {/* Headline */}
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05] text-foreground max-w-2xl"
-        >
-          {renderHeadline(get("hero_headline", "I code and build\ndigital things that _work_"))}
-        </motion.h1>
+        <AnimatePresence mode="wait">
+          <motion.h1
+            key={mode + "-headline"}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
+            className="text-5xl md:text-6xl lg:text-7xl font-headline font-bold tracking-tight leading-[1.05] text-foreground max-w-2xl"
+          >
+            {renderHeadline(c.headline)}
+          </motion.h1>
+        </AnimatePresence>
 
         {/* Sub */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-8 text-lg md:text-xl leading-relaxed text-muted-foreground max-w-lg"
-        >
-          {get("hero_subtext", "Open source contributor, full-stack developer, and ML enthusiast. Building things that matter. No filler, no fluff.")}
-        </motion.p>
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={mode + "-sub"}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="mt-8 text-lg md:text-xl leading-relaxed text-muted-foreground max-w-lg"
+          >
+            {c.subtext}
+          </motion.p>
+        </AnimatePresence>
 
         {/* CTAs */}
         <motion.div
@@ -88,30 +143,31 @@ const HeroSection = () => {
         >
           <a
             href="#work"
-            className="bg-accent text-accent-foreground px-8 py-4 rounded-full text-sm font-semibold hover:scale-105 transition-transform inline-block"
+            className="bg-accent text-accent-foreground px-8 py-4 rounded-full text-sm font-semibold hover:scale-105 hover:shadow-lg hover:shadow-accent/20 transition-all inline-block"
           >
-            {get("hero_cta_text", "Scroll for work")}
+            {c.cta}
           </a>
-          {resumeUrl && (
-            <a
-              href={resumeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              download
-              className="border border-accent text-accent px-8 py-4 rounded-full text-sm font-semibold hover:scale-105 transition-transform inline-flex items-center gap-2"
-            >
-              <Download className="w-4 h-4" />
-              Resume
-            </a>
-          )}
-          <a
+
+          {/* Animated GitHub button */}
+          <motion.a
             href={get("hero_github_url", "https://github.com/dino65-dev")}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-accent text-sm font-semibold hover:underline"
+            className="group relative text-accent text-sm font-semibold inline-flex items-center gap-2 overflow-hidden"
+            whileHover={{ x: 4 }}
           >
-            {get("hero_github_text", "GitHub, if you must")}
-          </a>
+            <motion.span
+              className="inline-block"
+              animate={{ x: [0, 4, 0] }}
+              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+            >
+              →
+            </motion.span>
+            <span className="relative">
+              {c.github}
+              <span className="absolute left-0 bottom-0 w-0 h-[1px] bg-accent group-hover:w-full transition-all duration-300" />
+            </span>
+          </motion.a>
         </motion.div>
 
         {/* Scroll indicator */}
@@ -166,14 +222,18 @@ const HeroSection = () => {
       </motion.div>
 
       {/* Bottom text */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-8 right-8 text-xs text-muted-foreground hidden lg:block z-30"
-      >
-        {get("hero_bottom_text", "Building open source since 2022. Keep scrollin'")}
-      </motion.p>
+      <AnimatePresence mode="wait">
+        <motion.p
+          key={mode + "-bottom"}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="absolute bottom-8 right-8 text-xs text-muted-foreground hidden lg:block z-30 font-script italic"
+        >
+          {c.bottom}
+        </motion.p>
+      </AnimatePresence>
     </section>
   );
 };
