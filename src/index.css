@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -114,7 +114,11 @@ html.lenis, html.lenis body {
 }
 
 .animate-marquee {
-  animation: marquee 30s linear infinite;
+  animation: marquee 25s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
 }
 
 /* Character reveal animation */
@@ -123,7 +127,11 @@ html.lenis, html.lenis body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Toggle switch styles */
+/* Smooth hover for all interactive elements */
+a, button, [role="button"] {
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, gap 0.3s ease;
+}
+
 /* Spotlight card effect */
 .spotlight-card {
   position: relative;
@@ -147,4 +155,12 @@ html.lenis, html.lenis body {
 }
 .spotlight-card:hover::before {
   opacity: 1;
+}
+
+/* Font families */
+.font-headline {
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+}
+.font-script {
+  font-family: 'Playfair Display', Georgia, serif;
 }

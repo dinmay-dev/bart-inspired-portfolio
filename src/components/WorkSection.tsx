@@ -42,27 +42,6 @@ interface Project {
   highlight: string;
 }
 
-const AnimatedText = ({ text }: { text: string }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
-
-  return (
-    <span ref={ref} className="inline">
-      {text.split("").map((char, i) => (
-        <motion.span
-          key={i}
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ delay: i * 0.012, duration: 0.1 }}
-          className="inline"
-        >
-          {char}
-        </motion.span>
-      ))}
-    </span>
-  );
-};
-
 const ProjectCard = ({ project, index }: { project: Project; index: number }) => {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -78,8 +57,8 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
       style={{ y, opacity }}
       className="border-t border-border py-12 md:py-16 group"
     >
-      <p className="text-sm text-accent font-medium mb-4">{project.highlight}</p>
-      <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-4">
+      <p className="text-sm text-accent font-medium mb-4 uppercase tracking-wider">{project.highlight}</p>
+      <h3 className="text-3xl md:text-4xl lg:text-5xl font-headline font-bold tracking-tight text-foreground mb-4">
         {project.title}
       </h3>
       <p className="text-lg text-muted-foreground max-w-2xl mb-8">
@@ -101,7 +80,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
         href={project.link}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 text-accent font-semibold text-sm hover:underline transition-all group-hover:gap-3"
+        className="inline-flex items-center gap-2 text-accent font-semibold text-sm hover:gap-4 transition-all"
       >
         {project.linkText}
         <span className="transition-transform group-hover:translate-x-1">→</span>
@@ -134,16 +113,13 @@ const WorkSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4"
+          className="text-4xl md:text-5xl font-headline font-bold tracking-tight text-foreground mb-4"
         >
-          {get("work_title", "Work worth scrolling")}
+          Work worth <em className="font-script font-normal italic text-accent">scrolling</em>
         </motion.h2>
-        <p className="text-lg text-muted-foreground mb-4 max-w-2xl">
+        <p className="text-lg text-muted-foreground mb-16 max-w-2xl">
           {get("work_subtitle", "Stuff I've designed, built or shipped")}
         </p>
-        <div className="text-xl md:text-2xl text-muted-foreground max-w-3xl mb-16 leading-relaxed">
-          <AnimatedText text={get("work_description", "A mix of shipped products, experiments, and code that made it to production. Built with clarity, curiosity, and just enough chaos.")} />
-        </div>
 
         {projects.map((project: Project, i: number) => (
           <ProjectCard key={project.title + i} project={project} index={i} />
