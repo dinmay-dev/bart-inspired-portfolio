@@ -13,9 +13,9 @@ const WordReveal = ({ text }: { text: string }) => {
       {words.map((word, i) => (
         <motion.span
           key={i}
-          initial={{ opacity: 0.15, y: 8 }}
+          initial={{ opacity: 0.12, y: 8 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: i * 0.04, duration: 0.4, ease: "easeOut" }}
+          transition={{ delay: i * 0.035, duration: 0.4, ease: "easeOut" }}
           className="inline-block mr-[0.3em]"
         >
           {word}
@@ -41,18 +41,18 @@ const AboutSection = () => {
   const imgY = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"]);
 
   return (
-    <section id="about" ref={sectionRef} className="bg-section-dark text-section-dark-fg py-24 md:py-32">
-      <div className="max-w-7xl mx-auto px-6 md:px-16">
+    <section id="about" ref={sectionRef} className="bg-foreground text-background py-28 md:py-40">
+      <div className="max-w-6xl mx-auto px-6 md:px-16">
         <motion.p
           ref={ref}
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
-          className="text-sm text-muted-foreground mb-6 font-medium uppercase tracking-wider"
+          className="font-mono-label text-background/40 mb-8"
         >
-          {get("about_intro", "Everything I build has to make sense")}
+          {get("about_intro", "About")}
         </motion.p>
 
-        <div className="text-2xl md:text-3xl lg:text-4xl leading-relaxed font-light text-section-dark-fg/80 max-w-4xl">
+        <div className="text-[clamp(1.25rem,2.5vw,2.25rem)] leading-[1.4] font-light text-background/75 max-w-4xl" style={{ letterSpacing: "-0.01em" }}>
           <WordReveal text={get("about_text", "I don't do chaos disguised as creativity. Everything I build has a reason to exist: a logic, a flow, a point. Code isn't decoration. It's systematised common sense. Whether it's a product for millions or a tiny CLI tool, it has to work, feel right, and earn its place in the repo.")} />
         </div>
 
@@ -61,7 +61,7 @@ const AboutSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="mt-16 overflow-hidden"
+          className="mt-20 overflow-hidden rounded-lg"
         >
           <motion.img
             style={{ y: imgY }}

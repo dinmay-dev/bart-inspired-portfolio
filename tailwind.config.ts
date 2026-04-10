@@ -17,6 +17,12 @@ export default {
         sans: ["Inter", "system-ui", "sans-serif"],
         headline: ["Space Grotesk", "Inter", "system-ui", "sans-serif"],
         script: ["Playfair Display", "Georgia", "serif"],
+        mono: ["JetBrains Mono", "SF Mono", "monospace"],
+      },
+      letterSpacing: {
+        "tighter-2": "-0.03em",
+        "tighter-3": "-0.04em",
+        "mono-wide": "0.12em",
       },
       colors: {
         border: "hsl(var(--border))",
