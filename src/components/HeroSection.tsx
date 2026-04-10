@@ -73,27 +73,29 @@ const HeroSection = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="flex items-center gap-6 mb-10"
+          className="flex items-center gap-6 mb-12"
         >
-          <div className="flex items-center gap-3 text-sm font-medium text-muted-foreground">
+          <div className="flex items-center gap-3">
             <span
-              className={`w-2.5 h-2.5 rounded-full ${availability === "available" ? "bg-green-500 animate-pulse" : "bg-muted-foreground"}`}
+              className={`w-2 h-2 rounded-full ${availability === "available" ? "bg-green-500 animate-pulse" : "bg-muted-foreground"}`}
             />
-            <span>{availability === "available" ? "Available for work" : "Currently busy"}</span>
+            <span className="font-mono-label text-muted-foreground">
+              {availability === "available" ? "Available for work" : "Currently busy"}
+            </span>
           </div>
 
           {/* Real / Corporate toggle */}
           <button
             onClick={() => setMode(mode === "real" ? "corporate" : "real")}
-            className="relative flex items-center bg-muted rounded-full p-0.5 text-xs font-semibold overflow-hidden"
+            className="relative flex items-center bg-muted rounded-full p-0.5 overflow-hidden"
           >
             <span
-              className={`relative z-10 px-4 py-1.5 rounded-full transition-colors duration-300 ${mode === "real" ? "text-accent-foreground" : "text-muted-foreground"}`}
+              className={`relative z-10 px-4 py-1.5 rounded-full text-[11px] font-semibold tracking-wide transition-colors duration-300 ${mode === "real" ? "text-accent-foreground" : "text-muted-foreground"}`}
             >
               Real
             </span>
             <span
-              className={`relative z-10 px-4 py-1.5 rounded-full transition-colors duration-300 ${mode === "corporate" ? "text-accent-foreground" : "text-muted-foreground"}`}
+              className={`relative z-10 px-4 py-1.5 rounded-full text-[11px] font-semibold tracking-wide transition-colors duration-300 ${mode === "corporate" ? "text-accent-foreground" : "text-muted-foreground"}`}
             >
               Corporate
             </span>
@@ -113,7 +115,8 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
-            className="text-5xl md:text-6xl lg:text-7xl font-headline font-bold tracking-tight leading-[1.05] text-foreground max-w-2xl"
+            className="text-[clamp(2.5rem,5.5vw,5.5rem)] font-headline font-bold leading-[1.02] text-foreground max-w-2xl"
+            style={{ letterSpacing: "-0.04em" }}
           >
             {renderHeadline(c.headline)}
           </motion.h1>
@@ -127,7 +130,8 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.4, delay: 0.1 }}
-            className="mt-8 text-lg md:text-xl leading-relaxed text-muted-foreground max-w-lg"
+            className="mt-8 text-lg leading-relaxed text-muted-foreground max-w-lg font-light"
+            style={{ letterSpacing: "-0.01em" }}
           >
             {c.subtext}
           </motion.p>
@@ -142,7 +146,7 @@ const HeroSection = () => {
         >
           <a
             href="#work"
-            className="bg-accent text-accent-foreground px-8 py-4 rounded-full text-sm font-semibold hover:scale-105 hover:shadow-lg hover:shadow-accent/20 transition-all inline-block"
+            className="bg-foreground text-background px-8 py-3.5 rounded-full text-[13px] font-semibold hover:scale-105 hover:shadow-lg transition-all inline-block tracking-tight"
           >
             {c.cta}
           </a>
@@ -152,7 +156,7 @@ const HeroSection = () => {
             href={get("hero_github_url", "https://github.com/dino65-dev")}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative text-accent text-sm font-semibold inline-flex items-center gap-2 overflow-hidden"
+            className="group relative text-accent text-[13px] font-semibold inline-flex items-center gap-2 overflow-hidden"
             whileHover={{ x: 4 }}
           >
             <motion.span
@@ -174,13 +178,13 @@ const HeroSection = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
-          className="mt-auto pt-8 flex items-center gap-2 text-xs text-muted-foreground"
+          className="mt-auto pt-8 flex items-center gap-2"
         >
-          <span>Scroll</span>
+          <span className="font-mono-label text-muted-foreground">Scroll</span>
           <motion.div
             animate={{ y: [0, 6, 0] }}
             transition={{ repeat: Infinity, duration: 1.5 }}
-            className="w-4 h-4"
+            className="w-4 h-4 text-muted-foreground"
           >
             ↓
           </motion.div>
@@ -202,7 +206,7 @@ const HeroSection = () => {
             className="w-full h-full object-cover"
           />
           <div
-            className="absolute inset-y-0 left-0 w-24 z-20"
+            className="absolute inset-y-0 left-0 w-32 z-20"
             style={{
               background: "linear-gradient(to right, hsl(var(--background)), transparent)",
             }}
@@ -215,7 +219,7 @@ const HeroSection = () => {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.5 }}
-        className="lg:hidden absolute top-24 right-6 w-20 h-20 rounded-full overflow-hidden border-2 border-accent/30"
+        className="lg:hidden absolute top-24 right-6 w-16 h-16 rounded-full overflow-hidden border-2 border-accent/30"
       >
         <img src={heroImage} alt="Developer" className="w-full h-full object-cover" />
       </motion.div>
@@ -228,7 +232,7 @@ const HeroSection = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="absolute bottom-8 right-8 text-xs text-muted-foreground hidden lg:block z-30 font-script italic"
+          className="absolute bottom-8 right-8 font-mono-label text-muted-foreground hidden lg:block z-30"
         >
           {c.bottom}
         </motion.p>
