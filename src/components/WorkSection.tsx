@@ -117,8 +117,11 @@ const WorkSection = () => {
         >
           Work worth <em className="font-script font-normal italic text-accent">scrolling</em>
         </motion.h2>
-        <p className="text-lg text-muted-foreground mb-16 max-w-2xl">
+        <p className="text-lg text-muted-foreground mb-4 max-w-2xl">
           {get("work_subtitle", "Stuff I've designed, built or shipped")}
+        </p>
+        <p className="text-sm text-muted-foreground/70 mb-16 max-w-xl">
+          A curated selection of projects I've worked on — from open source tools to full-stack applications.
         </p>
 
         {projects.map((project: Project, i: number) => (
