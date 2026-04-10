@@ -11,7 +11,7 @@ const StatsSection = () => {
     offset: ["start end", "end start"],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], ["5%", "-5%"]);
+  const y = useTransform(scrollYProgress, [0, 1], ["2%", "-2%"]);
 
   const stats = [
     { value: get("stat_1_value", "50+"), label: get("stat_1_label", "open source contributions") },
