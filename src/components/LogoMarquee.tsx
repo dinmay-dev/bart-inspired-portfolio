@@ -17,7 +17,6 @@ const LogoMarquee = () => {
     ? raw.split(",").map((t) => t.trim()).filter(Boolean)
     : defaultTechnologies;
 
-  // Duplicate enough for seamless loop (4x ensures no gap on any screen)
   const items = [...technologies, ...technologies, ...technologies, ...technologies];
 
   const { scrollYProgress } = useScroll({
@@ -28,26 +27,27 @@ const LogoMarquee = () => {
   const x = useTransform(scrollYProgress, [0, 1], ["0%", "-8%"]);
 
   return (
-    <section ref={sectionRef} className="py-20 md:py-28 border-t border-b border-border overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-16 mb-12">
+    <section ref={sectionRef} className="py-24 md:py-32 border-t border-border overflow-hidden">
+      <div className="max-w-6xl mx-auto px-6 md:px-16 mb-14">
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="font-mono-label text-muted-foreground mb-6"
+        >
+          Technologies
+        </motion.p>
         <motion.h3
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-3xl md:text-4xl font-headline font-bold tracking-tight text-foreground mb-3"
+          className="text-[clamp(1.75rem,3.5vw,2.5rem)] font-headline font-bold text-foreground"
+          style={{ letterSpacing: "-0.03em" }}
         >
           Name-dropping, <em className="font-script font-normal italic text-accent">briefly</em>
         </motion.h3>
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-muted-foreground text-lg"
-        >
-          Technologies I work with. Not that important, but people seem to care.
-        </motion.p>
       </div>
 
       <div className="relative">
@@ -55,27 +55,29 @@ const LogoMarquee = () => {
         <div className="absolute left-0 top-0 bottom-0 w-32 z-10" style={{ background: "linear-gradient(to right, hsl(var(--background)), transparent)" }} />
         <div className="absolute right-0 top-0 bottom-0 w-32 z-10" style={{ background: "linear-gradient(to left, hsl(var(--background)), transparent)" }} />
 
-        {/* Row 1 - forward */}
+        {/* Row 1 */}
         <motion.div style={{ x }} className="flex animate-marquee whitespace-nowrap mb-6">
           {items.map((tech, i) => (
             <span
               key={`r1-${i}`}
-              className="mx-8 text-2xl md:text-3xl font-headline font-semibold text-muted-foreground/20 hover:text-accent transition-colors duration-300 cursor-default select-none"
+              className="mx-8 text-2xl md:text-3xl font-headline font-semibold text-foreground/10 hover:text-accent transition-colors duration-300 cursor-default select-none"
+              style={{ letterSpacing: "-0.02em" }}
             >
               {tech}
             </span>
           ))}
         </motion.div>
 
-        {/* Row 2 - reverse direction */}
+        {/* Row 2 - reverse */}
         <div
           className="flex whitespace-nowrap"
-          style={{ animation: "marquee 25s linear infinite reverse" }}
+          style={{ animation: "marquee 30s linear infinite reverse" }}
         >
           {items.map((tech, i) => (
             <span
               key={`r2-${i}`}
-              className="mx-8 text-lg md:text-xl font-headline font-medium text-muted-foreground/10 hover:text-foreground/40 transition-colors duration-300 cursor-default select-none"
+              className="mx-8 text-lg md:text-xl font-headline font-medium text-foreground/5 hover:text-foreground/30 transition-colors duration-300 cursor-default select-none"
+              style={{ letterSpacing: "-0.02em" }}
             >
               {tech}
             </span>

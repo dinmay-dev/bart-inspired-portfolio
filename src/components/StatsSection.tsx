@@ -21,16 +21,18 @@ const StatsSection = () => {
   ];
 
   return (
-    <section ref={sectionRef} className="bg-section-dark text-section-dark-fg py-24 md:py-32 overflow-hidden">
-      <motion.div style={{ y }} className="max-w-7xl mx-auto px-6 md:px-16">
+    <section ref={sectionRef} className="bg-foreground text-background py-28 md:py-40 overflow-hidden">
+      <motion.div style={{ y }} className="max-w-6xl mx-auto px-6 md:px-16">
+        <p className="font-mono-label text-background/30 mb-6">Impact</p>
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-3xl md:text-4xl font-headline font-bold tracking-tight mb-16 text-center"
+          className="text-[clamp(1.75rem,3.5vw,2.5rem)] font-headline font-bold mb-20"
+          style={{ letterSpacing: "-0.03em" }}
         >
-          Impact measured in <em className="font-script font-normal italic text-accent">shipped code</em>
+          Measured in <em className="font-script font-normal italic text-accent">shipped code</em>
         </motion.h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
@@ -41,12 +43,15 @@ const StatsSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="text-center group"
+              className="group"
             >
-              <div className="text-5xl md:text-6xl lg:text-7xl font-headline font-bold text-accent mb-3 group-hover:scale-110 transition-transform duration-300">
+              <div
+                className="text-[clamp(2.5rem,6vw,4.5rem)] font-headline font-bold text-accent mb-3 group-hover:scale-105 transition-transform duration-300 origin-left"
+                style={{ letterSpacing: "-0.04em", lineHeight: 1 }}
+              >
                 {stat.value}
               </div>
-              <div className="text-sm text-section-dark-fg/60">
+              <div className="font-mono-label text-background/40">
                 {stat.label}
               </div>
             </motion.div>

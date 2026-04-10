@@ -1,5 +1,5 @@
 import { useRef, useMemo } from "react";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useSiteContent } from "@/hooks/useSiteContent";
 
 const defaultProjects = [
@@ -42,7 +42,7 @@ interface Project {
   highlight: string;
 }
 
-const ProjectCard = ({ project, index }: { project: Project; index: number }) => {
+const ProjectCard = ({ project }: { project: Project }) => {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -55,24 +55,27 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
     <motion.div
       ref={ref}
       style={{ y, opacity }}
-      className="border-t border-border py-12 md:py-16 group"
+      className="border-t border-border py-14 md:py-20 group"
     >
-      <p className="text-sm text-accent font-medium mb-4 uppercase tracking-wider">{project.highlight}</p>
-      <h3 className="text-3xl md:text-4xl lg:text-5xl font-headline font-bold tracking-tight text-foreground mb-4">
+      <p className="font-mono-label text-accent mb-6">{project.highlight}</p>
+      <h3
+        className="text-[clamp(1.75rem,4vw,3.5rem)] font-headline font-bold text-foreground mb-4"
+        style={{ letterSpacing: "-0.03em", lineHeight: 1.05 }}
+      >
         {project.title}
       </h3>
-      <p className="text-lg text-muted-foreground max-w-2xl mb-8">
+      <p className="text-lg text-muted-foreground max-w-2xl mb-10 font-light" style={{ letterSpacing: "-0.01em" }}>
         {project.subtitle}
       </p>
 
-      <div className="flex flex-wrap items-center gap-8 text-sm text-muted-foreground mb-6">
+      <div className="flex flex-wrap items-center gap-10 mb-8">
         <div>
-          <span className="block text-xs uppercase tracking-wider mb-1">Role</span>
-          <span className="text-foreground">{project.role}</span>
+          <span className="font-mono-label text-muted-foreground block mb-1">Role</span>
+          <span className="text-sm text-foreground font-medium">{project.role}</span>
         </div>
         <div>
-          <span className="block text-xs uppercase tracking-wider mb-1">Date</span>
-          <span className="text-foreground">{project.date}</span>
+          <span className="font-mono-label text-muted-foreground block mb-1">Date</span>
+          <span className="text-sm text-foreground font-medium">{project.date}</span>
         </div>
       </div>
 
@@ -80,7 +83,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
         href={project.link}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 text-accent font-semibold text-sm hover:gap-4 transition-all"
+        className="inline-flex items-center gap-2 text-accent font-semibold text-[13px] hover:gap-4 transition-all tracking-tight"
       >
         {project.linkText}
         <span className="transition-transform group-hover:translate-x-1">→</span>
@@ -91,7 +94,6 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
 
 const WorkSection = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
   const { get } = useSiteContent();
 
   const projects = useMemo(() => {
@@ -106,26 +108,32 @@ const WorkSection = () => {
   }, [get]);
 
   return (
-    <section id="work" className="py-24 md:py-32">
-      <div className="max-w-7xl mx-auto px-6 md:px-16">
-        <motion.h2
+    <section id="work" className="py-28 md:py-40">
+      <div className="max-w-6xl mx-auto px-6 md:px-16">
+        <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-4xl md:text-5xl font-headline font-bold tracking-tight text-foreground mb-4"
         >
-          Work worth <em className="font-script font-normal italic text-accent">scrolling</em>
-        </motion.h2>
-        <p className="text-lg text-muted-foreground mb-4 max-w-2xl">
-          {get("work_subtitle", "Stuff I've designed, built or shipped")}
-        </p>
-        <p className="text-sm text-muted-foreground/70 mb-16 max-w-xl">
-          A curated selection of projects I've worked on — from open source tools to full-stack applications.
-        </p>
+          <p className="font-mono-label text-muted-foreground mb-6">Selected Work</p>
+          <h2
+            className="text-[clamp(2rem,4.5vw,4rem)] font-headline font-bold text-foreground mb-4"
+            style={{ letterSpacing: "-0.03em" }}
+          >
+            Work worth <em className="font-script font-normal italic text-accent">scrolling</em>
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl font-light mb-4" style={{ letterSpacing: "-0.01em" }}>
+            {get("work_subtitle", "Stuff I've designed, built or shipped")}
+          </p>
+          <p className="text-sm text-muted-foreground/60 max-w-xl mb-16 font-light">
+            A curated selection of projects I've worked on — from open source tools to full-stack applications.
+          </p>
+        </motion.div>
 
         {projects.map((project: Project, i: number) => (
-          <ProjectCard key={project.title + i} project={project} index={i} />
+          <ProjectCard key={project.title + i} project={project} />
         ))}
       </div>
     </section>
