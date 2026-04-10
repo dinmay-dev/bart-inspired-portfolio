@@ -16,9 +16,9 @@ const HeroSection = () => {
     offset: ["start start", "end start"],
   });
 
-  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
-  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
   const content = {
     real: {
@@ -85,22 +85,21 @@ const HeroSection = () => {
           {/* Real / Corporate toggle */}
           <button
             onClick={() => setMode(mode === "real" ? "corporate" : "real")}
-            className="relative flex items-center bg-muted rounded-full p-1 text-xs font-semibold"
+            className="relative flex items-center bg-muted rounded-full p-0.5 text-xs font-semibold overflow-hidden"
           >
             <span
-              className={`px-3 py-1.5 rounded-full z-10 transition-colors duration-300 ${mode === "real" ? "text-accent-foreground" : "text-muted-foreground"}`}
+              className={`relative z-10 px-4 py-1.5 rounded-full transition-colors duration-300 ${mode === "real" ? "text-accent-foreground" : "text-muted-foreground"}`}
             >
               Real
             </span>
             <span
-              className={`px-3 py-1.5 rounded-full z-10 transition-colors duration-300 ${mode === "corporate" ? "text-accent-foreground" : "text-muted-foreground"}`}
+              className={`relative z-10 px-4 py-1.5 rounded-full transition-colors duration-300 ${mode === "corporate" ? "text-accent-foreground" : "text-muted-foreground"}`}
             >
               Corporate
             </span>
             <motion.div
-              layout
-              className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-accent rounded-full"
-              style={{ left: mode === "real" ? "4px" : "calc(50%)" }}
+              className="absolute top-0.5 bottom-0.5 rounded-full bg-accent"
+              animate={{ left: mode === "real" ? "2px" : "calc(50% - 2px)", width: "calc(50%)" }}
               transition={{ type: "spring", stiffness: 500, damping: 35 }}
             />
           </button>
