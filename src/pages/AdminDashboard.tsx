@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Home, FileText, Image as ImageIcon, Settings, LogOut, Menu, X,
-  ExternalLink, Code, FolderKanban, Mail, BookOpen,
+  ExternalLink, Code, FolderKanban, Mail, BookOpen, Newspaper,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -14,11 +14,13 @@ import TechnologiesPage from "@/pages/admin/TechnologiesPage";
 import ProjectsPage from "@/pages/admin/ProjectsPage";
 import MessagesPage from "@/pages/admin/MessagesPage";
 import ResearchPage from "@/pages/admin/ResearchPage";
+import PostsAdminPage from "@/pages/admin/PostsPage";
 
 const navItems = [
   { path: "/admin", label: "Overview", icon: Home, exact: true },
   { path: "/admin/content", label: "Content", icon: FileText },
   { path: "/admin/projects", label: "Projects", icon: FolderKanban },
+  { path: "/admin/posts", label: "Posts", icon: Newspaper },
   { path: "/admin/research", label: "Research", icon: BookOpen },
   { path: "/admin/technologies", label: "Technologies", icon: Code },
   { path: "/admin/images", label: "Images", icon: ImageIcon },
@@ -31,6 +33,7 @@ const getPageContent = (pathname: string) => {
   if (pathname.startsWith("/admin/content")) return <ContentPage />;
   if (pathname.startsWith("/admin/projects")) return <ProjectsPage />;
   if (pathname.startsWith("/admin/research")) return <ResearchPage />;
+  if (pathname.startsWith("/admin/posts")) return <PostsAdminPage />;
   if (pathname.startsWith("/admin/technologies")) return <TechnologiesPage />;
   if (pathname.startsWith("/admin/images")) return <ImagesPage />;
   if (pathname.startsWith("/admin/messages")) return <MessagesPage />;

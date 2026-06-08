@@ -30,9 +30,12 @@ const Navbar = () => {
 
       {/* Center nav */}
       <div className="hidden md:flex items-center gap-1 bg-foreground text-background px-5 py-2.5 rounded-full">
-        <a href="#work" className="px-4 py-1.5 text-[13px] font-medium tracking-tight hover:text-accent transition-colors">
+        <a href="/#work" className="px-4 py-1.5 text-[13px] font-medium tracking-tight hover:text-accent transition-colors">
           Work
         </a>
+        <Link to="/posts" className="px-4 py-1.5 text-[13px] font-medium tracking-tight hover:text-accent transition-colors">
+          Posts
+        </Link>
         {resumeUrl && (
           <a
             href={resumeUrl}

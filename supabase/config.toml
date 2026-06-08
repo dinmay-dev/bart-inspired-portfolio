@@ -1,0 +1,4 @@
+project_id = "pwbhrnxmhxtmjshwvccn"
+
+[functions.s3-sign]
+verify_jwt = false
