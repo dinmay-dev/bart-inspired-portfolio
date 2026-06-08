@@ -182,3 +182,7 @@ a, button, [role="button"] {
   outline: 2px dashed hsl(var(--accent));
   outline-offset: 2px;
 }
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
