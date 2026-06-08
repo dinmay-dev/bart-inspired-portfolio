@@ -33,6 +33,7 @@ const getPageContent = (pathname: string) => {
   if (pathname.startsWith("/admin/content")) return <ContentPage />;
   if (pathname.startsWith("/admin/projects")) return <ProjectsPage />;
   if (pathname.startsWith("/admin/research")) return <ResearchPage />;
+  if (pathname.startsWith("/admin/posts")) return <PostsAdminPage />;
   if (pathname.startsWith("/admin/technologies")) return <TechnologiesPage />;
   if (pathname.startsWith("/admin/images")) return <ImagesPage />;
   if (pathname.startsWith("/admin/messages")) return <MessagesPage />;
