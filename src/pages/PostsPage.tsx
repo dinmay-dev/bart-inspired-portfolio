@@ -44,7 +44,7 @@ const PostsPage = () => {
               <ArrowLeft className="w-4 h-4" /> Back
             </Link>
             <div className="text-center">
-              <div className="text-[10px] uppercase tracking-widest text-mono text-muted-foreground">Feed</div>
+              <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground">Feed</div>
               <h1 className="font-headline text-2xl tracking-tighter-2 text-foreground">Posts & Credentials</h1>
             </div>
             <div className="w-12" />

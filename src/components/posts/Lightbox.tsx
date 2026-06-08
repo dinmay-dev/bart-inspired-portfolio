@@ -72,7 +72,7 @@ const Lightbox = ({ media, startIndex, onClose }: Props) => {
           </div>
         </div>
         {media.length > 1 && (
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-background/80 text-mono text-xs">
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-background/80 font-mono text-xs">
             {i + 1} / {media.length}
           </div>
         )}

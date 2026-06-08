@@ -123,7 +123,7 @@ const PostEditor = ({ initial, onSave, onCancel }: { initial: Post; onSave: (p: 
         <div className="p-6 space-y-5">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] uppercase tracking-widest text-mono text-muted-foreground">Type</label>
+              <label className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground">Type</label>
               <select
                 value={post.type}
                 onChange={(e) => set("type", e.target.value as PostType)}
@@ -144,7 +144,7 @@ const PostEditor = ({ initial, onSave, onCancel }: { initial: Post; onSave: (p: 
           </div>
 
           <div>
-            <label className="text-[10px] uppercase tracking-widest text-mono text-muted-foreground">Title</label>
+            <label className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground">Title</label>
             <input
               value={post.title}
               onChange={(e) => set("title", e.target.value)}
@@ -154,7 +154,7 @@ const PostEditor = ({ initial, onSave, onCancel }: { initial: Post; onSave: (p: 
           </div>
 
           <div>
-            <label className="text-[10px] uppercase tracking-widest text-mono text-muted-foreground">Caption</label>
+            <label className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground">Caption</label>
             <textarea
               value={post.caption}
               onChange={(e) => set("caption", e.target.value)}
@@ -165,7 +165,7 @@ const PostEditor = ({ initial, onSave, onCancel }: { initial: Post; onSave: (p: 
           </div>
 
           <div>
-            <label className="text-[10px] uppercase tracking-widest text-mono text-muted-foreground">Tags</label>
+            <label className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground">Tags</label>
             <div className="flex flex-wrap gap-2 mt-1 mb-2">
               {post.tags.map((t) => (
                 <span key={t} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-muted text-xs">
@@ -185,7 +185,7 @@ const PostEditor = ({ initial, onSave, onCancel }: { initial: Post; onSave: (p: 
 
           {post.type === "certificate" && (
             <div className="grid grid-cols-2 gap-3 p-4 rounded-md bg-muted/30 border border-border">
-              <div className="col-span-2 text-[10px] uppercase tracking-widest text-mono text-muted-foreground">Credential details</div>
+              <div className="col-span-2 text-[10px] uppercase tracking-widest font-mono text-muted-foreground">Credential details</div>
               <div>
                 <label className="text-xs text-muted-foreground">Issuer</label>
                 <input value={post.issuer ?? ""} onChange={(e) => set("issuer", e.target.value)} className="mt-1 w-full px-3 py-2 rounded-md bg-background border border-border text-sm" />
@@ -206,7 +206,7 @@ const PostEditor = ({ initial, onSave, onCancel }: { initial: Post; onSave: (p: 
           )}
 
           <div>
-            <label className="text-[10px] uppercase tracking-widest text-mono text-muted-foreground">Media</label>
+            <label className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground">Media</label>
             <div
               onDragOver={(e) => e.preventDefault()}
               onDrop={onDrop}
@@ -307,7 +307,7 @@ const PostsAdminPage = () => {
       ) : (
         <div className="border border-border bg-card rounded-lg overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-muted/30 text-[10px] uppercase tracking-widest text-mono text-muted-foreground">
+            <thead className="bg-muted/30 text-[10px] uppercase tracking-widest font-mono text-muted-foreground">
               <tr>
                 <th className="text-left px-4 py-3">Title</th>
                 <th className="text-left px-4 py-3">Type</th>

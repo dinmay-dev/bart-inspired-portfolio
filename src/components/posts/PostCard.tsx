@@ -65,7 +65,7 @@ const PostCard = ({ post, priority }: Props) => {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-headline font-semibold tracking-tighter-2 text-foreground">{ownerName}</span>
-            <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-mono bg-foreground text-background px-2 py-0.5 rounded-full">
+            <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-widest font-mono bg-foreground text-background px-2 py-0.5 rounded-full">
               {typeIcon[post.type]} {post.type}
             </span>
           </div>
@@ -92,7 +92,7 @@ const PostCard = ({ post, priority }: Props) => {
           {post.tags.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-3">
               {post.tags.map((t) => (
-                <span key={t} className="text-[10px] uppercase tracking-widest text-mono text-muted-foreground border border-border px-2 py-0.5 rounded-full">
+                <span key={t} className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground border border-border px-2 py-0.5 rounded-full">
                   #{t}
                 </span>
               ))}
@@ -111,7 +111,7 @@ const PostCard = ({ post, priority }: Props) => {
       {/* Certificate details */}
       {post.type === "certificate" && (post.issuer || post.issue_date || post.credential_url) && (
         <div className="px-5 py-4 border-b border-border bg-muted/30">
-          <div className="text-[10px] uppercase tracking-widest text-mono text-muted-foreground mb-2">Credential</div>
+          <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mb-2">Credential</div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
             {post.issuer && <span className="font-medium text-foreground">{post.issuer}</span>}
             {post.issue_date && <span className="text-muted-foreground">· Issued {post.issue_date}</span>}
