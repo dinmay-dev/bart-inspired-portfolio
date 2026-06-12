@@ -1,7 +1,29 @@
+import { S3Client, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { supabase } from "@/lib/supabase";
 
 const SIGN_URL = `https://pwbhrnxmhxtmjshwvccn.supabase.co/functions/v1/s3-sign`;
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3YmhybnhtaHh0bWpzaHd2Y2NuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MDMxMTgsImV4cCI6MjA4OTA3OTExOH0.4URujnB9opUR0VqWpCR85n1RZ4L4SN_8SqK2Q_ab7jg";
+
+// AWS/B2 Credentials from environment variables
+const ACCESS_KEY_ID = import.meta.env.VITE_AWS_ACCESS_KEY_ID;
+const SECRET_ACCESS_KEY = import.meta.env.VITE_AWS_SECRET_ACCESS_KEY;
+const REGION = import.meta.env.VITE_AWS_REGION || "us-east-1";
+const BUCKET_NAME = import.meta.env.VITE_AWS_BUCKET_NAME || "dimnay-portfolio-data";
+const ENDPOINT = import.meta.env.VITE_AWS_ENDPOINT;
+
+const hasDirectS3 = !!(ACCESS_KEY_ID && SECRET_ACCESS_KEY);
+
+const s3Client = hasDirectS3
+  ? new S3Client({
+      region: REGION,
+      endpoint: ENDPOINT || undefined,
+      credentials: {
+        accessKeyId: ACCESS_KEY_ID,
+        secretAccessKey: SECRET_ACCESS_KEY,
+      },
+    })
+  : null;
 
 interface SignResult {
   url: string;
@@ -15,7 +37,26 @@ async function getAuthHeader(): Promise<string> {
   return `Bearer ${token}`;
 }
 
-export async function signS3(object_path: string, mode: "read" | "write"): Promise<SignResult> {
+export async function signS3(object_path: string, mode: "read" | "write", fileType?: string): Promise<SignResult> {
+  if (hasDirectS3 && s3Client) {
+    if (mode === "read") {
+      const command = new GetObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: object_path,
+      });
+      const url = await getSignedUrl(s3Client, command, { expiresIn: 900 }); // Valid for 15 minutes
+      return { url, expires_in: 900, method: "GET" };
+    } else {
+      const command = new PutObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: object_path,
+        ContentType: fileType || "application/octet-stream",
+      });
+      const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 }); // Valid for 1 hour
+      return { url, expires_in: 3600, method: "PUT" };
+    }
+  }
+
   const res = await fetch(SIGN_URL, {
     method: "POST",
     headers: {
@@ -43,7 +84,7 @@ export async function getReadUrl(object_path: string): Promise<string> {
 }
 
 export async function uploadToS3(file: Blob, object_path: string, onProgress?: (pct: number) => void): Promise<void> {
-  const { url } = await signS3(object_path, "write");
+  const { url } = await signS3(object_path, "write", file.type);
   await new Promise<void>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("PUT", url);
@@ -56,3 +97,4 @@ export async function uploadToS3(file: Blob, object_path: string, onProgress?: (
     xhr.send(file);
   });
 }
+
