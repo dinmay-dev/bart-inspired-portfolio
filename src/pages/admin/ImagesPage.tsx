@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { Upload, Trash2, Loader2, FileText } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { supabase } from "@/lib/supabase";
+import { resolveStoredS3Url, toS3Reference, uploadToS3 } from "@/lib/s3";
 import { toast } from "sonner";
 
 const imageSlots = [
@@ -46,13 +47,9 @@ const ImagesPage = () => {
     setResumeUploading(true);
     try {
       const ext = file.name.split(".").pop() || "pdf";
-      const path = `resume.${ext}`;
-      const { error } = await supabase.storage
-        .from("site-images")
-        .upload(path, file, { upsert: true });
-      if (error) throw error;
-      const { data } = supabase.storage.from("site-images").getPublicUrl(path);
-      await update("resume_url", data.publicUrl);
+      const path = `site-images/resume.${ext}`;
+      await uploadToS3(file, path);
+      await update("resume_url", toS3Reference(path));
       refresh();
       toast.success("Resume uploaded!");
     } catch (err: any) {
@@ -69,6 +66,15 @@ const ImagesPage = () => {
       toast.success("Resume removed");
     } catch {
       toast.error("Failed to remove resume");
+    }
+  };
+
+  const handleOpenResume = async (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    try {
+      window.location.assign(await resolveStoredS3Url(resumeUrl));
+    } catch (err) {
+      toast.error(`Could not open resume: ${(err as Error).message}`);
     }
   };
 
@@ -170,8 +176,7 @@ const ImagesPage = () => {
                 <p className="text-sm text-foreground font-medium">Resume uploaded</p>
                 <a
                   href={resumeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  onClick={handleOpenResume}
                   className="text-xs text-accent hover:underline"
                 >
                   View / Download
