@@ -83,6 +83,48 @@ export async function getReadUrl(object_path: string): Promise<string> {
   return url;
 }
 
+/**
+ * Persist object paths, never presigned URLs.  The latter include an expiry
+ * timestamp and will eventually fail when reused from site content.
+ */
+export function toS3Reference(objectPath: string): string {
+  return `s3:${objectPath.replace(/^\/+/, "")}`;
+}
+
+/**
+ * Resolve both the current durable `s3:path` form and the old B2 presigned
+ * URL form.  This keeps existing content working while new uploads are saved
+ * as durable object references.
+ */
+export async function resolveStoredS3Url(value: string): Promise<string> {
+  const objectPath = getStoredS3ObjectPath(value);
+  return objectPath ? getReadUrl(objectPath) : value;
+}
+
+function getStoredS3ObjectPath(value: string): string | null {
+  if (value.startsWith("s3:")) {
+    const path = value.slice(3).replace(/^\/+/, "");
+    return path || null;
+  }
+
+  try {
+    const url = new URL(value);
+    const isLegacyB2Url =
+      url.hostname.endsWith("backblazeb2.com") &&
+      url.searchParams.has("X-Amz-Algorithm");
+
+    if (!isLegacyB2Url) return null;
+
+    // B2 S3 URLs use /<bucket>/<object-path>. The bucket is configured by
+    // the signer, so only the object path belongs in the stored reference.
+    const [, , ...objectSegments] = url.pathname.split("/");
+    const path = objectSegments.map(decodeURIComponent).join("/");
+    return path || null;
+  } catch {
+    return null;
+  }
+}
+
 export async function uploadToS3(file: Blob, object_path: string, onProgress?: (pct: number) => void): Promise<void> {
   const { url } = await signS3(object_path, "write", file.type);
   await new Promise<void>((resolve, reject) => {
@@ -97,4 +139,3 @@ export async function uploadToS3(file: Blob, object_path: string, onProgress?: (
     xhr.send(file);
   });
 }
-
