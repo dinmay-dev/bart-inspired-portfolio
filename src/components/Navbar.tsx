@@ -2,17 +2,34 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { resolveStoredS3Url } from "@/lib/s3";
 
 const Navbar = () => {
   const { get } = useSiteContent();
   const resumeUrl = get("resume_url", "");
   const [scrolled, setScrolled] = useState(false);
+  const [openingResume, setOpeningResume] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const openResume = async (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (openingResume) return;
+
+    setOpeningResume(true);
+    try {
+      // A new URL is signed immediately before navigation, so it cannot have
+      // expired while sitting in the site_content table.
+      window.location.assign(await resolveStoredS3Url(resumeUrl));
+    } catch (error) {
+      console.error("Unable to open resume:", error);
+      setOpeningResume(false);
+    }
+  };
 
   return (
     <motion.nav
@@ -39,11 +56,11 @@ const Navbar = () => {
         {resumeUrl && (
           <a
             href={resumeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+            onClick={openResume}
+            aria-busy={openingResume}
             className="px-4 py-1.5 text-[13px] font-medium tracking-tight hover:text-accent transition-colors"
           >
-            Résumé
+            {openingResume ? "Opening…" : "Résumé"}
           </a>
         )}
         <a href="#blog" className="px-4 py-1.5 text-[13px] font-medium tracking-tight hover:text-accent transition-colors">
