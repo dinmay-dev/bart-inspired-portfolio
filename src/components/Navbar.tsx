@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { getResumeHref } from "@/lib/resume";
 
 const Navbar = () => {
   const { get } = useSiteContent();
@@ -38,7 +39,7 @@ const Navbar = () => {
         </Link>
         {resumeUrl && (
           <a
-            href={resumeUrl}
+            href={getResumeHref(resumeUrl)}
             target="_blank"
             rel="noopener noreferrer"
             className="px-4 py-1.5 text-[13px] font-medium tracking-tight hover:text-accent transition-colors"

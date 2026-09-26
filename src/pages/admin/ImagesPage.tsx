@@ -3,6 +3,7 @@ import { Upload, Trash2, Loader2, FileText } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { getResumeHref } from "@/lib/resume";
 
 const imageSlots = [
   { key: "hero_image", label: "Hero Photo", path: "hero.webp" },
@@ -169,7 +170,7 @@ const ImagesPage = () => {
                 <FileText className="w-12 h-12 text-accent" />
                 <p className="text-sm text-foreground font-medium">Resume uploaded</p>
                 <a
-                  href={resumeUrl}
+                  href={getResumeHref(resumeUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-accent hover:underline"
